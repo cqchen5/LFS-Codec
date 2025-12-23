@@ -1,0 +1,60 @@
+common:
+  save_interval: 5000
+  test_interval: 1
+  log_interval: 50
+  max_epoch: 100
+  seed: 3401
+  amp: False
+
+datasets:
+  lmdb_train_file: ''
+  lmdb_test_file: ''
+  batch_size: 12
+  segment_size: 48000
+  num_workers: 0
+  fixed_length: 0
+  pin_memory: True
+
+checkpoint:
+  resume: False
+  checkpoint_path: ''
+  disc_checkpoint_path: ''
+  save_folder: ''
+  save_location: '${checkpoint.save_folder}/bs${datasets.batch_size}_cut${datasets.segment_size}_length${datasets.fixed_length}_' 
+
+optimization:
+  lr: 3e-4
+  disc_lr: 3e-4
+
+lr_scheduler:
+  warmup_epoch: 3
+  warmup_step: 5000
+  discri_step: 30000
+
+model:
+  sample_rate: 24000
+  channels: 1
+  train_discriminator: True # you can set it to 2/3 and other number to train discriminator only
+  train_discriminator_rate: 0.5
+  audio_normalize: True
+  filters: 64
+  ratios: [8, 6, 5, 4]
+  disc_win_lengths: [1024, 2048, 512]
+  disc_hop_lengths: [256, 512, 128]
+  disc_n_ffts: [1024, 2048, 512]
+  causal: True
+  norm: 'weight_norm'
+  segment: None
+  commitment_loss_lambda: 3
+  distill_loss_lambda: 10
+
+distributed:
+  data_parallel: True
+  world_size: 2
+  find_unused_parameters: False
+  torch_distributed_debug: False
+  init_method: tcp
+
+distill:
+  distill_type: 'd_axis'
+  lambda_sim: 1
