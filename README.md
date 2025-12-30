@@ -20,10 +20,9 @@
 
 ## **🏗️ Architecture Overview**
 
-\<div align="center"\>  
-\<\!-- Replace with your actual architecture diagram link, e.g., docs/assets/architecture.png \--\>  
-\<img src="src/model.png" alt="LFS-Codec Architecture" width="100%"\>  
-\</div\>  
+<div align="center">
+  <img src="src/model.png" alt="LFS-Codec Architecture" width="100%">
+</div>
 LFS-Codec is built upon the Mimi codec architecture, comprising a causal SeaNet encoder and a transposed convolutional decoder.
 
 1. **Encoder Side**: Incorporates the DBTD module to explicitly subtract timbre features, forcing the VQ bottleneck to focus on linguistic content.  
@@ -31,15 +30,18 @@ LFS-Codec is built upon the Mimi codec architecture, comprising a causal SeaNet 
 3. **Decoder Side**: Re-injects timbre features to restore high-quality speech waveforms.
 
 ## **📊 Performance**
+<div align="center">
+  <img src="src/final.png" alt="LFS-Codec @1.1 kbps vs. various neural audio codecs." width="100%">
+</div>
 
 We conducted extensive evaluations on the **LibriTTS** (English) and **AISHELL-3** (Mandarin) datasets. LFS-Codec significantly outperforms existing adapted High-Frame-Rate (HFR) models and native Low-Frame-Rate (LFR) models at 12.5 fps.
 
 | Model                       | Frame Rate (fps) | GMACs   | NISQA (Quality) ↑ | SIM (Similarity) ↑ | WER (Intelligibility) ↓ |
 | :-------------------------- | :--------------- | :------ | :---------------- | :----------------- | :---------------------- |
-| **HFR Baselines (Adapted)** |                  |         |                   |                    |                         |
+| **HFR Baselines (Adapted)** |                                                                                               |
 | SimVQ                       | 12.5             | 12G     | 1.459             | 0.368              | 72.75%                  |
 | DAC                         | 12.5             | 172G    | 2.955             | 0.478              | 19.36%                  |
-| **LFR Baselines**           |                  |         |                   |                    |                         |
+| **LFR Baselines**           |                                                                                               |
 | Mimi \[11\]                 | 12.5             | 69G     | 4.098             | 0.694              | 4.66%                   |
 | SNAC \[9\]                  | 47               | 112G    | 4.189             | 0.727              | 4.61%                   |
 | **LFS-Codec (Ours)**        | **12.5**         | **84G** | **4.411**         | **0.742**          | **3.95%**               |
