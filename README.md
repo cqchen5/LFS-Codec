@@ -1,12 +1,9 @@
-\<div align="center"\>
-
 # **LFS-Codec: Low-Frame-Rate Speech Coding with Regularized Codebook Remapping and Dual-Branch Timbre Decoupling**
 
 **\[ICME Submission\]**
 
 **Achieving High-Fidelity Speech Reconstruction at Ultralow 12.5 fps**
 
-\</div\>
 
 ## **📖 Introduction**
 
@@ -31,17 +28,17 @@ LFS-Codec is built upon the Mimi codec architecture, comprising a causal SeaNet 
 
 ## **📊 Performance**
 <div align="center">
-  <img src="src/final.png" alt="LFS-Codec @1.1 kbps vs. various neural audio codecs." width="100%">
+  <img src="src/final.png" alt="LFS-Codec @1.1 kbps vs. various neural audio codecs." width="50%">
 </div>
 
 We conducted extensive evaluations on the **LibriTTS** (English) and **AISHELL-3** (Mandarin) datasets. LFS-Codec significantly outperforms existing adapted High-Frame-Rate (HFR) models and native Low-Frame-Rate (LFR) models at 12.5 fps.
 
 | Model                       | Frame Rate (fps) | GMACs   | NISQA (Quality) ↑ | SIM (Similarity) ↑ | WER (Intelligibility) ↓ |
 | :-------------------------- | :--------------- | :------ | :---------------- | :----------------- | :---------------------- |
-| **HFR Baselines (Adapted)** |                                                                                               |
+| **HFR Baselines (Adapted)**                                                                                                 |
 | SimVQ                       | 12.5             | 12G     | 1.459             | 0.368              | 72.75%                  |
 | DAC                         | 12.5             | 172G    | 2.955             | 0.478              | 19.36%                  |
-| **LFR Baselines**           |                                                                                               |
+| **LFR Baselines**                                                                                                           |
 | Mimi \[11\]                 | 12.5             | 69G     | 4.098             | 0.694              | 4.66%                   |
 | SNAC \[9\]                  | 47               | 112G    | 4.189             | 0.727              | 4.61%                   |
 | **LFS-Codec (Ours)**        | **12.5**         | **84G** | **4.411**         | **0.742**          | **3.95%**               |
