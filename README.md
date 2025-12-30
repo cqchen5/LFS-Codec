@@ -27,7 +27,7 @@ LFS-Codec is built upon the Mimi codec architecture, comprising a causal SeaNet 
 3. **Decoder Side**: Re-injects timbre features to restore high-quality speech waveforms.
 
 ## **📊 Performance**
-<div align="center">
+<div align="left">
   <img src="src/final.png" alt="LFS-Codec @1.1 kbps vs. various neural audio codecs." width="50%">
 </div>
 
