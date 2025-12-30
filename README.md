@@ -1,116 +1,119 @@
-LFS-Codec: Low-Frame-Rate Speech Coding with Regularized Codebook Remapping and Dual-Branch Timbre Decoupling
+\<div align="center"\>
 
-<div align="center">
+# **LFS-Codec: Low-Frame-Rate Speech Coding with Regularized Codebook Remapping and Dual-Branch Timbre Decoupling**
 
-</div>
+**\[ICME Submission\]**
 
-# 📖 简介 (Introduction)
+**在 12.5 fps 超低帧率下实现高质量语音重构**
 
-LFS-Codec 是一种专为资源受限的多媒体应用设计的低帧率（Low-Frame-Rate）神经语音编解码器。针对降低帧率通常导致码本利用率不足和音色细节丢失的问题，我们提出了两种正交的增强机制，在 12.5 fps 的超低帧率下实现了卓越的重建质量、可懂度和说话人相似度。
+[English](https://www.google.com/search?q=./README_EN.md) | [简体中文](https://www.google.com/search?q=./README.md)
 
-主要贡献包括：
+\</div\>
 
-LFS-Codec: 一个基于 Group-Residual VQ 的高效编解码器，仅需 84 GMACs 计算量。
+## **📖 简介 (Introduction)**
 
-PLCR (Parametric Linear Codebook Remapping): 通过参数化线性重映射和动态解冻策略，最大化码本利用率并优化语义蒸馏。
+**LFS-Codec** 是一种专为资源受限的多媒体应用设计的低帧率（Low-Frame-Rate, LFR）神经语音编解码器。针对传统模型在降低帧率时常出现的**码本利用率不足**和**音色细节丢失**问题，我们提出了两种正交的增强机制，在 **12.5 fps** 的超低帧率下实现了卓越的重建质量、可懂度和说话人相似度。
 
-DBTD (Dual-Branch Timbre Decoupling): 双分支音色解耦模块，利用 ECAPA-TDNN 和 TIRE 分别提取说话人声纹和韵律风格，有效分离内容与音色。
+### **✨ 核心特性**
 
-# 🚀 核心方法 (Methods)
+* **⚡ 极致高效**: 仅需 **84 GMACs** 计算量，适合边缘设备部署。  
+* **🎯 PLCR (Parametric Linear Codebook Remapping)**: 通过参数化线性重映射和动态解冻策略，最大化码本利用率并优化语义蒸馏。  
+* **🎭 DBTD (Dual-Branch Timbre Decoupling)**: 双分支音色解耦模块，利用 ECAPA-TDNN 和 TIRE 分别提取声纹与韵律，有效实现内容与音色的分离。
 
-1. 总体架构
+## **🏗️ 架构概览 (Architecture)**
 
-LFS-Codec 基于 Mimi codec 架构，包含因果 SeaNet 编码器和转置卷积解码器。我们在量化瓶颈处引入了 PLCR 和 DBTD 模块以增强低帧率下的表现。
+\<div align="center"\>  
+\<\!-- 请替换为您的架构图链接，例如: docs/assets/architecture.png \--\>  
+\<img src="https://www.google.com/search?q=https://via.placeholder.com/800x300%3Ftext%3DLFS-Codec%2BArchitecture%2BDiagram" alt="LFS-Codec Architecture" width="100%"\>  
+\</div\>  
+LFS-Codec 基于 Mimi codec 架构，包含因果 SeaNet 编码器和转置卷积解码器。
 
-2. Parametric Linear Codebook Remapping (PLCR)
+1. **编码器侧**: 引入 DBTD 模块显式减去音色特征，迫使 VQ 瓶颈专注于语言内容。  
+2. **量化器**: 采用 PLCR 策略，仅对第一层 RVQ 进行强语义蒸馏。  
+3. **解码器侧**: 重新注入音色特征以恢复高质量的语音波形。
 
-为了解决低帧率下的表征退化问题，PLCR 引入了：
+## **📊 性能表现 (Performance)**
 
-正交正则化 (Orthogonal Regularization): 防止投影矩阵退化，保持维度完整性。
+我们在 **LibriTTS** (英语) 和 **AISHELL-3** (中文) 数据集上进行了广泛评估。LFS-Codec 在 12.5 fps 下显著优于现有的 High-Frame-Rate (HFR) 适配模型和原生 Low-Frame-Rate (LFR) 模型。
 
-语义锚定策略 (Semantic Anchoring Strategy): 利用 WavLM 作为教师模型，仅对第一层 RVQ 的第一个量化器进行语义蒸馏，释放剩余量化器用于捕捉声学细节。
+| Model                       | Frame Rate (fps) | GMACs   | NISQA (Quality) ↑ | SIM (Similarity) ↑ | WER (Intelligibility) ↓ |
+| :-------------------------- | :--------------- | :------ | :---------------- | :----------------- | :---------------------- |
+| **HFR Baselines (Adapted)** |                  |         |                   |                    |                         |
+| SimVQ                       | 12.5             | 12G     | 1.459             | 0.368              | 72.75%                  |
+| DAC                         | 12.5             | 172G    | 2.955             | 0.478              | 19.36%                  |
+| **LFR Baselines**           |                  |         |                   |                    |                         |
+| Mimi \[11\]                 | 12.5             | 69G     | 4.098             | 0.694              | 4.66%                   |
+| SNAC \[9\]                  | 47               | 112G    | 4.189             | 0.727              | 4.61%                   |
+| **LFS-Codec (Ours)**        | **12.5**         | **84G** | **4.411**         | **0.742**          | **3.95%**               |
 
-动态调度 (Dynamic Scheduling): 训练初期冻结码本，后期解冻以稳定对齐。
+**注**: 更详细的消融实验结果（PLCR 与 DBTD 的有效性验证）请参考论文 Table II。
 
-3. Dual-Branch Timbre Decoupling (DBTD)
+## **🛠️ 安装指南 (Installation)**
 
-为了在压缩内容的同时保留说话人特征，DBTD 采用双分支结构：
+建议使用 Anaconda 创建独立的虚拟环境：
 
-ECAPA-TDNN 分支: 提取短时说话人声纹 (Fingerprints)。
+\# 1\. 克隆仓库  
+git clone \[https://github.com/your\_username/LFS-Codec.git\](https://github.com/your\_username/LFS-Codec.git)  
+cd LFS-Codec
 
-TIRE 分支: 学习句子级时不变表征 (Style/Prosody)。
-
-操作: 在编码器侧显式减去这些特征，在解码器侧重新注入，强制 VQ 瓶颈专注于语言内容。
-
-# 📊 实验结果 (Results)
-
-我们在 LibriTTS 和 AISHELL-3 数据集上进行了广泛评估。LFS-Codec 在 12.5 fps 下显著优于现有的 High-Frame-Rate (HFR) 适配模型和原生 Low-Frame-Rate (LFR) 模型。
-
-
-
-# 🛠️ 安装 (Installation)
-
-建议使用 Anaconda 创建虚拟环境：
-
-conda create -n lfscodec python=3.9
+\# 2\. 创建环境  
+conda create \-n lfscodec python=3.9  
 conda activate lfscodec
 
-安装 PyTorch (根据你的 CUDA 版本调整)
-pip install torch torchvision torchaudio --index-url [https://download.pytorch.org/whl/cu118](https://download.pytorch.org/whl/cu118)
+\# 3\. 安装依赖 (根据您的 CUDA 版本调整 PyTorch 安装命令)  
+pip install torch torchvision torchaudio \--index-url \[https://download.pytorch.org/whl/cu118\](https://download.pytorch.org/whl/cu118)  
+pip install \-r requirements.txt
 
-安装其他依赖
-pip install -r requirements.txt
+## **🚀 快速开始 (Quick Start)**
 
+### **1\. 数据准备 (Data Preparation)**
 
-依赖项 (Requirements)
+本项目支持 LibriTTS 和 AISHELL-3 数据集。请按以下结构组织数据，并运行预处理脚本：
 
-主要依赖包括但不限于：
+python preprocess.py \--dataset libritts \--in\_dir /path/to/LibriTTS \--out\_dir ./filelists
 
-torchaudio
+### **2\. 模型训练 (Training)**
 
-numpy
+修改 configs/lfs\_12.5fps.json 中的路径配置，然后启动训练：
 
-scipy
+python train.py \\  
+    \--config configs/lfs\_12.5fps.json \\  
+    \--model lfs\_codec \\  
+    \--name lfs\_experiment\_v1
 
-soundfile
+**提示**: PLCR 的动态解冻（Unfreezing）策略将在 30k 步时自动触发，无需人工干预。
 
-speechbrain (用于 ECAPA-TDNN)
+### **3\. 推理与重建 (Inference)**
 
-transformers (用于 WavLM)
+使用预训练模型对音频进行编解码重建：
 
-# 📂 数据准备 (Data Preparation)
+python inference.py \\  
+    \--checkpoint checkpoints/lfs\_experiment\_v1/best\_model.pth \\  
+    \--input\_file assets/demo\_input.wav \\  
+    \--output\_dir results/
 
-本项目支持 LibriTTS (英语) 和 AISHELL-3 (中文) 数据集。
+### **4\. 提取离散 Token (Tokenization)**
 
-下载数据集并解压。
+如果您只需要提取语音的离散编码（用于训练下游 LLM）：
 
+python tokenize.py \--checkpoint ... \--input\_file ... \--output\_file tokens.npy
 
+## **🎧 试听样例 (Audio Samples)**
 
-# 🖥️ 使用方法 (Usage)
+请访问我们的 Demo Page 收听更多重建音频样本：  
+👉 LFS-Codec Demo Page
 
-1. 训练 (Training)
+## **📜 引用 (Citation)**
 
-修改 configs/lfs_codec.json 中的配置路径，然后运行：
+如果您觉得本工作对您的研究有帮助，请引用我们的论文：
 
-python train_multi_gpu.py
+@inproceedings{anonymous2024lfs,  
+  title={Low-Frame-Rate Speech Coding with Regularized Codebook Remapping and Dual-Branch Timbre Decoupling},  
+  author={Anonymous Authors},  
+  booktitle={ICME},  
+  year={2024}  
+}
 
+## **📄 协议 (License)**
 
-注意:
-
-训练总迭代次数建议为 300k。
-
-PLCR 层的动态解冻（Unfreezing）将在 30k 步时自动触发。
-
-2. 推理 (Inference / Reconstruction)
-
-使用训练好的模型对音频进行编码和解码：
-
-python example.py \
-    --checkpoint_path checkpoints/lfs_base_12.5fps/best_model.pth \
-    --input_wav samples/input.wav \
-    --output_wav samples/output.wav
-
-
-# 📝 协议 (License)
-
-本项目采用 MIT License 开源协议。
+本项目代码采用 [MIT License](https://www.google.com/search?q=LICENSE) 开源协议。
