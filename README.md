@@ -2,12 +2,9 @@ LFS-Codec: Low-Frame-Rate Speech Coding with Regularized Codebook Remapping and 
 
 <div align="center">
 
-
-在 12.5 fps 超低帧率下实现高质量语音重构
-
 </div>
 
-📖 简介 (Introduction)
+# 📖 简介 (Introduction)
 
 LFS-Codec 是一种专为资源受限的多媒体应用设计的低帧率（Low-Frame-Rate）神经语音编解码器。针对降低帧率通常导致码本利用率不足和音色细节丢失的问题，我们提出了两种正交的增强机制，在 12.5 fps 的超低帧率下实现了卓越的重建质量、可懂度和说话人相似度。
 
@@ -19,7 +16,7 @@ PLCR (Parametric Linear Codebook Remapping): 通过参数化线性重映射和�
 
 DBTD (Dual-Branch Timbre Decoupling): 双分支音色解耦模块，利用 ECAPA-TDNN 和 TIRE 分别提取说话人声纹和韵律风格，有效分离内容与音色。
 
-🚀 核心方法 (Methods)
+# 🚀 核心方法 (Methods)
 
 1. 总体架构
 
@@ -45,23 +42,23 @@ TIRE 分支: 学习句子级时不变表征 (Style/Prosody)。
 
 操作: 在编码器侧显式减去这些特征，在解码器侧重新注入，强制 VQ 瓶颈专注于语言内容。
 
-📊 实验结果 (Results)
+# 📊 实验结果 (Results)
 
 我们在 LibriTTS 和 AISHELL-3 数据集上进行了广泛评估。LFS-Codec 在 12.5 fps 下显著优于现有的 High-Frame-Rate (HFR) 适配模型和原生 Low-Frame-Rate (LFR) 模型。
 
 
 
-🛠️ 安装 (Installation)
+# 🛠️ 安装 (Installation)
 
 建议使用 Anaconda 创建虚拟环境：
 
 conda create -n lfscodec python=3.9
 conda activate lfscodec
 
-# 安装 PyTorch (根据你的 CUDA 版本调整)
+安装 PyTorch (根据你的 CUDA 版本调整)
 pip install torch torchvision torchaudio --index-url [https://download.pytorch.org/whl/cu118](https://download.pytorch.org/whl/cu118)
 
-# 安装其他依赖
+安装其他依赖
 pip install -r requirements.txt
 
 
@@ -81,7 +78,7 @@ speechbrain (用于 ECAPA-TDNN)
 
 transformers (用于 WavLM)
 
-📂 数据准备 (Data Preparation)
+# 📂 数据准备 (Data Preparation)
 
 本项目支持 LibriTTS (英语) 和 AISHELL-3 (中文) 数据集。
 
@@ -89,7 +86,7 @@ transformers (用于 WavLM)
 
 
 
-🖥️ 使用方法 (Usage)
+# 🖥️ 使用方法 (Usage)
 
 1. 训练 (Training)
 
@@ -114,6 +111,6 @@ python example.py \
     --output_wav samples/output.wav
 
 
-📝 协议 (License)
+# 📝 协议 (License)
 
 本项目采用 MIT License 开源协议。
